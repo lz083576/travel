@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>route_test</title>
+    <script src="js/template.js"></script>
+</head>
+<body>
+<div></div>
+<script id="test" type="text/html">
+    <h1>{{title}}</h1>
+    <ul>
+        {{each persons as value i}}
+        <li> 索引 {{i+1}}:{{value}}</li>
+        {{/each}}
+    </ul>
+</script>
+
+
+<script>
+    var data = {
+        title: '演员表',
+        persons: ['孔老师', '岳老师', '牛叔']
+    };
+    var html = template('test', data);
+    console.log(html);
+    document.querySelector("div").innerHTML = html;
+</script>
+</body>
+</html>

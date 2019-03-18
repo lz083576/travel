@@ -1,0 +1,147 @@
+<!-- 头部 start -->
+<script src="js/getParameter.js"></script>
+<script>
+    $(function () {
+        //查询用户名
+        $.get("User/findOne", {}, function (data) {
+            //{uid:1,name:'李四'}
+            var msg = "欢迎回来，" + data.name;
+            $("#span_username").html(msg);
+
+        });
+        //查询分类数据
+        $.get("Category/findAll", {}, function (data) {
+            // [{cid:1;cname:sss}]
+            var lis = '<li class="nav-active"><a href="index.html">首页</a></li>';
+            //遍历数组,拼接字符串(<li>)
+            for (var i = 0; i < data.length; i++) {
+                var li = '<li ><a class="yes" href="route_list.html?cid='+data[i].cid+'">'+data[i].cname+'</a></li>';
+
+                lis += li;
+            }
+            //拼接收藏
+            lis += '<li><a href="favoriterank.html">收藏排行榜</a></li>';
+            //将lis字符串设置到ul中
+            $("#category").html(lis);
+            /*
+            让被点击的导航出于选中状态
+
+             */
+            var href = location.href;
+            var currentPage = href.substring(href.lastIndexOf("/")+1,href.indexOf("?")==-1?href.length:href.indexOf("?"));
+            //console.log(currentPage);///index.html rout_list.html favoriterank.html
+            $(".nav li").removeClass("nav-active");
+            if(currentPage=="index.html"){
+                $(".nav li:first").addClass("nav-active");
+            }else if(currentPage=="favoriterank.html"){
+                $(".nav li:last").addClass("nav-active");
+            }else{
+                // todo
+                var cid = location.search.split('=')[1]; // location.search="?cid=2"
+                $('.nav [href="route_list.html?cid='+cid+'"]').closest('li').addClass('nav-active');
+
+
+                // console.log($(".nav [href='route_list.html']").length);
+                // console.log('cid:', data[i].cid);
+                //$('.nav [href="route_list.html?cid='+data[i].cid+'"]').closest('li').addClass('nav-active');
+
+
+            }
+        });
+
+        //给搜索按钮绑定单击事件，获取输入框的内容
+        $("#search-button").click(function () {
+
+            var rname = $("#search_input").val();
+            //跳转到rouyr_list并且拼接rname
+            var cid = getParameter("cid");
+
+            location.href = "http://localhost/travel/route_list.html?cid="+cid+"&rname="+rname;
+        });
+
+        //给输入框赋值
+        if (decodeURI(getParameter("rname"))!="null"){
+            $("#search_input").val(decodeURI(getParameter("rname")))
+        }
+
+        //按回车开始搜索
+        $("#search_input").on("keyup",function (event) {
+            if (event.keyCode =="13"){
+                $("#search-button").click();
+            }
+        });
+
+        //点击收藏后判断是否登录
+        $("#myFavorite").click(function () {
+            $.get("User/findOne",{},function (user) {
+                if (user){
+                    //用户登录了
+                    //添加功能
+                    location.href = "http://localhost/travel/myfavorite.html";
+                }else {
+                    alert("你尚未登录，请登录");
+                    location.href = "http://localhost/travel/login.html";
+                }
+            })
+        })
+
+    });
+
+</script>
+
+<header id="header">
+    <div class="top_banner">
+        <img src="images/top_banner.jpg" alt="">
+    </div>
+    <div class="shortcut">
+        <!-- 未登录状态  -->
+        <div class="login_out">
+            <a href="login.html">登录</a>
+            <a href="register.html">注册</a>
+        </div>
+        <!-- 登录状态  -->
+        <div class="login">
+            <!--显示欢迎回来谁谁谁-->
+            <span id="span_username"></span>
+            <a href="myfavorite.html" class="collection" id="myFavorite" onclick="myFavorite()">我的收藏</a>
+            <a href="javascript:location.href='User/exit';">退出</a>
+        </div>
+    </div>
+    <div class="header_wrap">
+        <div class="topbar">
+            <div class="logo">
+                <a href="/"><img src="images/logo.jpg" alt=""></a>
+            </div>
+            <div class="search">
+                <input name="" id="search_input" type="text" placeholder="请输入路线名称" class="search_input" autocomplete="off">
+                <a href="javascript:;" id="search-button" class="search-button">搜索</a>
+            </div>
+            <div class="hottel">
+                <div class="hot_pic">
+                    <img src="images/hot_tel.jpg" alt="">
+                </div>
+                <div class="hot_tel">
+                    <p class="hot_time">客服热线(9:00-6:00)</p>
+                    <p class="hot_num">400-618-9090</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- 头部 end -->
+<!-- 首页导航 -->
+<div class="navitem">
+    <ul id="category" class="nav">
+        <!--<li class="nav-active"><a href="index.html">首页</a></li>
+        <li><a href="route_list.html">门票</a></li>
+        <li><a href="route_list.html">酒店</a></li>
+        <li><a href="route_list.html">香港车票</a></li>
+        <li><a href="route_list.html">出境游</a></li>
+        <li><a href="route_list.html">国内游</a></li>
+        <li><a href="route_list.html">港澳游</a></li>
+        <li><a href="route_list.html">抱团定制</a></li>
+        <li><a href="route_list.html">全球自由行</a></li>
+        <li><a href="favoriterank.html">收藏排行榜</a></li>-->
+    </ul>
+</div>
+    
